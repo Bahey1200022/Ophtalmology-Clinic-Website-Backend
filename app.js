@@ -60,3 +60,4 @@ const server = app.listen(PORT, () => {
 if (process.env.SEED_DB === "true" && process.argv.includes("--seed")) {
   require("./utils/seeding");
 }
+

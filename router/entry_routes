@@ -1,0 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const entryController = require('../controllers/entryController');
+
+
+
+router.post('/admin_login',entryController.admin_login);
+
+
+
+module.exports = router;
