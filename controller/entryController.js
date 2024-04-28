@@ -30,7 +30,13 @@ const entryController={
     });
   }
 
-
+ //generate token
+ const accessToken = await generateToken(admin.adminName);
+ return res.status(200).json({
+   success: true,
+   message: "Login successful",
+   accessToken,
+ });
 
 
 }}
