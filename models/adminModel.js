@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const { hashPassword } = require("../../utils/passwords");
+const { hashPassword } = require("../utils/password");
 
 //create patient schema for reddit user
 const adminSchema = new mongoose.Schema({
@@ -39,5 +39,3 @@ adminSchema.pre("save", async function (next) {
 });
 
 module.exports = mongoose.model("Admin", adminSchema);
-
-module.exports = Admin;

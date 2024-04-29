@@ -10,8 +10,10 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
-
+const entryRouter=require('./router/entryRouter');
 const app = express();
+const cors = require("cors");
+app.use(cors());
 
 /**
  * Connects to the MongoDB database and starts the Express server.
@@ -47,7 +49,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(express.json());
-
+app.use("/api", entryRouter);
 //define routes
 
 const PORT = process.env.PORT;
