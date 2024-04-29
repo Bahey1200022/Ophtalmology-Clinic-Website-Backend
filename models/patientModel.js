@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const { hashPassword } = require("../../utils/passwords");
+const { hashPassword } = require("../utils/password");
 
 //create patient schema for reddit user
 const patientSchema = new mongoose.Schema({

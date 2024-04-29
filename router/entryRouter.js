@@ -4,8 +4,9 @@ const entryController = require('../controller/entryController');
 
 
 
-router.post('/admin_login',entryController.adminLogin);
-
+router.post('/adminLogin',entryController.adminLogin);
+router.post('/doctorLogin',entryController.doctorsLogin);
+router.post('/patientLogin',entryController.patientsLogin);
 
 
 module.exports = router;
