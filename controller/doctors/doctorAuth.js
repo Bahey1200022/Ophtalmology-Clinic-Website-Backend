@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const brypt = require("bcrypt");
-const Patient = require("../../models/patientModel");
+const Doctor = require("../../models/doctorModel");
 require("dotenv").config();
 const {
   generateToken,
@@ -9,11 +9,9 @@ const {
 } = require("../../utils/tokens");
 const { comparePassword } = require("../../utils/password");
 
-
-
-async function patientExist(req, res) {
-    const { username } = req.params;
-    const user = await Patient.findOne({ username });
+async function doctorExist(req, res) {
+    const { name } = req.params;
+    const user = await Doctor.findOne({ name });
     try {
       if (user) {
         return res.status(409).json({
@@ -31,25 +29,26 @@ async function patientExist(req, res) {
         message: error.message,
       });
     }
-  }
+}
 
 
-  async function patientSignUp(req, res) {
+async function doctorSignUp(req, res) {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password,DOB,gender,phone, insurance, ChronicDisease } = req.body;
+    const { name, email, password,Speciality,gender,phone, fees } = req.body;
     try {
       
-      let emailExist = await Patient.findOne({ email });
+      let emailExist = await Doctor.findOne({ email });
       if (emailExist) {
         return res.status(409).json({
           success: false,
           message: "Email already exists",
         });
       }
-      let userExist = await Patient.findOne({ name });
+      let userExist = await Doctor.findOne({ name });
       if (userExist) {
         return res.status(409).json({
           success: false,
@@ -59,7 +58,7 @@ async function patientExist(req, res) {
   
      
   
-      const user = new Patient({ name, email, password,DOB,gender,phone, insurance, ChronicDisease});
+      const user = new Doctor({ name, email, password,Speciality,gender,phone, fees});
       //save user to database
       await user.save();
   
@@ -81,9 +80,37 @@ async function patientExist(req, res) {
         message: error.message,
       });
     }
+}
+async function doctorLogin(req, res) {
+    const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
+  const { name, password } = req.body;
+  const user = await Doctor.findOne({ name });
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "Invalid credentials, check username or password",
+    });
+  }
+  //compare password
+  const isMatch = await comparePassword(password, user.password);
+  if (!isMatch) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid credentials, check username or password",
+    });
+  }
+  //generate token
+  const accessToken = await generateToken(user._id);
+  return res.status(200).json({
+    success: true,
+    message: "Login successful",
+    accessToken,
+  });
+}
 
-  module.exports = {
-    patientSignUp,
-    patientExist,
-  }
+
+
+module.exports = { doctorExist, doctorSignUp, doctorLogin};

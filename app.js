@@ -12,6 +12,7 @@ const express = require("express");
 const session = require("express-session");
 const entryRouter=require('./router/entryRouter');
 const patientRouter=require('./router/patientsRouter');
+const doctorRouter=require('./router/doctorsRouter');
 const app = express();
 const cors = require("cors");
 app.use(cors());
@@ -51,7 +52,8 @@ app.get("/", (req, res) => {
 
 app.use(express.json());
 app.use("/api", entryRouter);
- app.use("/api", patientRouter);
+app.use("/api", patientRouter);
+app.use("/api", doctorRouter);
 //define routes
 
 const PORT = process.env.PORT;
