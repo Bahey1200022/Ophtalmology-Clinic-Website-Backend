@@ -2,9 +2,11 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const { hashPassword } = require("../utils/password");
 
-//create patient schema for reddit user
+const Schema = mongoose.Schema;
+
+//create user schema for reddit user
 const adminSchema = new mongoose.Schema({
-  adminName: {
+  username: {
     type: String,
     required: true,
     unique: true,
@@ -24,7 +26,13 @@ const adminSchema = new mongoose.Schema({
   },
 });
 
-// Hash the password before saving the patient to the database
+/**
+ * Hashes the password before saving the user to the database.
+ * @param {Function} next - Callback function.
+ * @returns {Promise<void>} - Promise that resolves when hashing is done.
+ * @throws {Error} - If there is an error hashing the password or saving the userPreferences.
+ * @async
+ */
 adminSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -38,4 +46,6 @@ adminSchema.pre("save", async function (next) {
   }
 });
 
-module.exports = mongoose.model("Admin", adminSchema);
+const Admin = mongoose.model("Admin", adminSchema);
+
+module.exports = Admin;

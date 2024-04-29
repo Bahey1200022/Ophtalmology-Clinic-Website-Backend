@@ -6,12 +6,14 @@
  * @requires ../models/userModel
  */
 
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const axios = require("axios");
-const Doctor = require("../models/doctorModel");
-const Patient= require("../models/patientModel");
+// const Doctor = require("../models/doctorModel");
+// const Patient= require("../models/patientModel");
 const Admin = require("../models/adminModel");
+
+const jwt = require("jsonwebtoken");
+const { userExist } = require("../controller/adminAuth");
 
 
 /**
@@ -101,14 +103,14 @@ async function verifyFirebaseToken(token) {
  */
 
 async function verifyGoogleToken(token) {
-    try {
-        const response = await axios.get(
-            `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`
-        );
-        return response;
-    } catch (err) {
-        throw new Error(err);
-    }
+  try {
+    const response = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${token}`
+    );
+    return response;
+  } catch (err) {
+    throw new Error(err);
+  }
 }
 
 /**
@@ -122,20 +124,8 @@ async function verifyGoogleToken(token) {
 async function authorizeUser(token) {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const doctor = await Doctor.findById(payload.email);
-    if (doctor) {
-      return doctor;
-    }
-
-    const patient = await Patient.findById(payload.email);
-    if (patient) {
-      return patient;
-    }
-    const admin = await Admin.findById(payload.email);
-    if (admin) {
-      return admin;
-    }
-
+    const user = await User.findById(payload.userId);
+    return user; // Return the user object if token is valid
   } catch (err) {
     return null; // Return null if token is invalid
   }
