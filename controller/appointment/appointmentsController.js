@@ -212,7 +212,13 @@ async function getAllAppointments(req, res) {
 async function getAvailableTimeSlots(req, res) {
   try{
     const doctors = await Doctor.find();
-    const availableTimeSlots = doctors.map(doctor => doctor.availableTimes).flat();
+    const availableTimeSlots = doctors.map(doctor => {
+      return {
+      doctorName: doctor.name,
+      timeSlots: doctor.availableDays
+      };
+    }).flat();
+
     return res.status(200).json({
       success: true,
       availableTimeSlots,
