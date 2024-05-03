@@ -209,7 +209,26 @@ async function getAllAppointments(req, res) {
   }
 }
 
+async function getAvailableTimeSlots(req, res) {
+  try{
+    const doctors = await Doctor.find();
+    const availableTimeSlots = doctors.map(doctor => doctor.availableTimes).flat();
+    return res.status(200).json({
+      success: true,
+      availableTimeSlots,
+    });
+   
+} catch (error) {
+  console.error(error);
+  return res.status(500).json({
+    success: false,
+    message: "Internal server error",
+  });
+}
+}
 
 module.exports = {
   createAppointment,
-getAllAppointments,};
+getAllAppointments,
+getAvailableTimeSlots
+};

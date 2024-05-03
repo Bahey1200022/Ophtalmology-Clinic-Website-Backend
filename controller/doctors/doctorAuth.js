@@ -113,4 +113,5 @@ async function doctorLogin(req, res) {
 
 
 
+
 module.exports = { doctorExist, doctorSignUp, doctorLogin};
