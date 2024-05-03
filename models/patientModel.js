@@ -40,8 +40,42 @@ const patientSchema = new mongoose.Schema({
     required: false,
   },
   record: {
-    type: String,
-    required: false
+    RT: [
+      {
+        SPH: {
+          type: String,
+        },
+        cyl: {
+          type: String,
+        },
+        axis: {
+          type: String,
+        },
+        reading: {
+          type: String,
+        },
+      },
+    ],
+    LT: [
+      {
+        SPH: {
+          type: String,
+        },
+        cyl: {
+          type: String,
+        },
+        axis: {
+          type: String,
+        },
+        reading: {
+          type: String,
+        },
+      },
+    ],
+    Date: {
+      type: Date,
+      default: Date.now,
+    },
   },
   createdAt: {
     type: Date,
