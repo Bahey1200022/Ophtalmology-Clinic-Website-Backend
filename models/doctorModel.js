@@ -37,15 +37,14 @@ const doctorSchema = new mongoose.Schema({
   },
   fees: {
     type: Number,
-    default: false,
+    required: true,
   },
-  availableDays: {
-    type: String,
-    enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-  
-  },
+  availableDays:[ {
+    type: String, 
+    required: true,
+  }],
   availableTime: {
-    type: String,
+    type: String, 
   },
   appointments: [
     {
