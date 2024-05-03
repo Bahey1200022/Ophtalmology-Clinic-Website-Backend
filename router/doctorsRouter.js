@@ -13,6 +13,8 @@ router.post("/doctorLogin", doctorAuth.doctorLogin);
 router.post("/doctorSignUp", doctorAuth.doctorSignUp);
 router.post("/doctorEditProfile", doctorController.editProfile);
 router.post("/doctorEditPatientProfile", doctorController.editPatientProfile);
+router.get("/doctorsInfo/:query", doctorAuth.getDoctorInfo);
+router.delete("/deleteDoctor/:query", doctorController.deleteDoctor);
 
 module.exports = router;
 

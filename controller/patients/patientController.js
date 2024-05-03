@@ -27,4 +27,55 @@ async function showRecords(req, res) {
         });
     }
 }
-module.exports = { showRecords };
+
+async function patientInfo(req, res) {
+    try {
+        const name = req.params.query;
+        const patient = await Patient.findOne({name});
+        if (!patient) {
+            return res.status(404).json({
+                success: false,
+                message: "Patient not found",
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            message: "Patient found",
+            patient: patient,
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+}
+
+async function deletePatient (req, res) {
+    try {
+        const name = req.params.query;
+        const patient = await Patient.findOneAndDelete(name);
+        if (!patient) {
+            return res.status(404).json({
+                success: false,
+                message: "Patient not found",
+            });
+        }   
+        return res.status(200).json({
+            success: true,
+            message: "Patient deleted",
+        });
+
+    }
+    catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+}
+
+module.exports = { showRecords, patientInfo, deletePatient };
