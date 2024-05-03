@@ -249,9 +249,68 @@ async function editAppointment(req, res) {
     });
   }
 }
+async function markDone(req, res) {
+  try{
+const{ _id}=req.body
+const appointment = await Appointment.findById(_id);
+
+if (!appointment) {
+  return res.status(400).json({
+    success: false,
+    message: "Appointment not found",
+  });
+}
+
+// Update an attribute in the appointment
+appointment.isDone = true;
+await appointment.save();
+
+return res.status(200).json({
+  success: true,
+  message: "Appointment attribute updated successfully",
+  appointment,
+});
+
+
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(400).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+async function cancelAppointment(req, res) {
+  try {
+    const  appointmentId  = req.params.id;
+
+    const appointment = await Appointment.findByIdAndDelete(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Appointment cancelled successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
 module.exports = {
   createAppointment,
   getAllAppointments,
   getAvailableTimeSlots,
   editAppointment,
+  markDone,
+  cancelAppointment,
+
 };
