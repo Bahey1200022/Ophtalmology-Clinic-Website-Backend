@@ -12,7 +12,8 @@ const express = require("express");
 const session = require("express-session");
 const entryRouter=require('./router/entryRouter');
 const patientRouter=require('./router/patientsRouter');
-const doctorRouter=require('./router/doctorsRouter');
+const doctorRouter = require('./router/doctorsRouter');
+const appointmentRouter = require('./router/appointmentRouter');
 const app = express();
 const cors = require("cors");
 app.use(cors());
@@ -54,6 +55,8 @@ app.use(express.json());
 app.use("/api", entryRouter);
 app.use("/api", patientRouter);
 app.use("/api", doctorRouter);
+app.use("/api", appointmentRouter);
+
 //define routes
 
 const PORT = process.env.PORT;
