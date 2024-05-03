@@ -72,7 +72,7 @@ const Appointment = require("../../models/appointmentModel");
 async function createAppointment(req, res) {
   try {
     // Validate input data
-    const { patientName, doctorName, date, time,service } = req.body;
+    const { patientName, doctorName, date, time,Service } = req.body;
     if (!patientName || !doctorName || !date || !time) {
       return res.status(400).json({
         success: false,
@@ -102,7 +102,7 @@ async function createAppointment(req, res) {
       doctor: doctor._id,
       patient: patient._id,
       date,
-      service,
+      Service,
       isDone: true, 
     });
 
@@ -125,7 +125,7 @@ async function createAppointment(req, res) {
       date,
       time,
       isDone: false, 
-      service,
+      Service,
     };
 
     doctor.appointments.push(appointment);
@@ -140,7 +140,7 @@ async function createAppointment(req, res) {
       patientName: patient.name,
       date,
       time,
-      service,
+      Service,
       isDone: false, 
     });
 
