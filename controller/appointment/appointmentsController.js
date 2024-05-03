@@ -236,8 +236,34 @@ async function getAvailableTimeSlots(req, res) {
 }
 }
 
+async function cancelAppointment(req, res) {
+  try {
+    const  appointmentId  = req.params.id;
+
+    const appointment = await Appointment.findByIdAndDelete(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Appointment cancelled successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+    
+
 module.exports = {
   createAppointment,
-getAllAppointments,
-getAvailableTimeSlots
+ getAllAppointments,
+ getAvailableTimeSlots, 
+ cancelAppointment
 };
