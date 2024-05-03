@@ -59,7 +59,7 @@ const billSchema = new mongoose.Schema({
  * @throws {Error} - If there is an error hashing the password or saving the userPreferences.
  * @async
  */
-doctorSchema.pre("save", async function (next) {
+billSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
       return next();
     }

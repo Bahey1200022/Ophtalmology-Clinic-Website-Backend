@@ -14,6 +14,7 @@ const entryRouter=require('./router/entryRouter');
 const patientRouter=require('./router/patientsRouter');
 const doctorRouter = require('./router/doctorsRouter');
 const appointmentRouter = require('./router/appointmentRouter');
+const billRouter = require('./router/billRouter');
 const app = express();
 const cors = require("cors");
 app.use(cors());
@@ -56,6 +57,7 @@ app.use("/api", entryRouter);
 app.use("/api", patientRouter);
 app.use("/api", doctorRouter);
 app.use("/api", appointmentRouter);
+app.use("/api", billRouter);
 
 //define routes
 

@@ -5,5 +5,5 @@ const appointmentController = require("../controller/appointment/appointmentsCon
 router.get("/appointments", appointmentController.getAvailableTimeSlots);
 router.post("/createAppointment", appointmentController.createAppointment);
 router.get("/appointments/history/:type", appointmentController.getAllAppointments);
-
+router.post("/appointments/markDone", appointmentController.markDone);
 module.exports = router;
