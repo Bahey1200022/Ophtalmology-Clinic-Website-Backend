@@ -19,8 +19,9 @@ async function GenerateBill(req, res) {
     const patient = await Patient.findById(appointment.patient);
       const doctor = await Doctor.findById(appointment.doctor);
     const patientInsurance = patient.Insurance;
+    console.log(patientInsurance);
     const patientService = appointment.Service;
-    var percentage = 1;
+    var percentage = 0;
     var bill = 0;
     if (patientInsurance == "MidRight") {
       percentage = 0.25;
@@ -29,6 +30,10 @@ async function GenerateBill(req, res) {
     } else if (patientInsurance == "MidMark") {
       percentage = 0.75;
     }
+    else {
+        percentage = 0;
+    }
+    console.log(percentage);
     if (patientService == "Glasses") {
       bill = 200;
     } else if (patientService == "Contact Lenses") {
@@ -38,8 +43,8 @@ async function GenerateBill(req, res) {
     } else if (patientService == "Lasik") {
       bill = 400;
     }
-    const totalBill = bill;
-    const discount = bill * percentage;
+    const discount = bill*percentage;
+    console.log(discount);
     const finalBill = bill - discount;
     const newBill = new Bill({
       patientID: patient._id,
@@ -47,7 +52,7 @@ async function GenerateBill(req, res) {
       doctorID: doctor._id,
       patientName: patient.name,
       doctorName: doctor.name,
-      billAmount: totalBill,
+      billAmount: bill,
       insuranceCoverage: discount,
       billInsured: finalBill,
       service: patientService,

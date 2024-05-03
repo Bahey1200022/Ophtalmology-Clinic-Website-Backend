@@ -39,7 +39,7 @@ async function patientExist(req, res) {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password,DOB,gender,phone, insurance, ChronicDisease } = req.body;
+    const { name, email, password,DOB,gender,phone, Insurance, ChronicDisease } = req.body;
     try {
       
       let emailExist = await Patient.findOne({ email });
@@ -59,7 +59,7 @@ async function patientExist(req, res) {
   
      
   
-      const user = new Patient({ name, email, password,DOB,gender,phone, insurance, ChronicDisease});
+      const user = new Patient({ name, email, password,DOB,gender,phone, Insurance, ChronicDisease});
       //save user to database
       await user.save();
   

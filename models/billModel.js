@@ -33,7 +33,7 @@ const billSchema = new mongoose.Schema({
         required: false,
     },
     billInsured: {
-        type: String,
+        type: Number,
         required: true,
     },
     service: {
