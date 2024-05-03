@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const { hashPassword } = require("../utils/password");
 
 const Schema = mongoose.Schema;
 
-const AppointmentSchema = new mongoose.Schema({
+const AppointmentSchema = new Schema({
   doctor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Doctor",
@@ -12,6 +10,16 @@ const AppointmentSchema = new mongoose.Schema({
   },
   patient: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Patient",
+    required: true,
+  },
+  doctorName: {
+    type: String,
+    ref: "Doctor",
+    required: true,
+  },
+  patientName: {
+    type: String,
     ref: "Patient",
     required: true,
   },
@@ -29,7 +37,6 @@ const AppointmentSchema = new mongoose.Schema({
   },
 });
 
-
-const Appointment = mongoose.model("Appointment ", AppointmentSchema);
+const Appointment = mongoose.model("Appointment", AppointmentSchema);
 
 module.exports = Appointment;
