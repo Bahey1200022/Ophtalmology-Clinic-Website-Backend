@@ -34,12 +34,13 @@ const patientSchema = new mongoose.Schema({
   Insurance: {
     type: String,
     required: false,
+    enum: ["MidRight", "Allianz", "MidMark"],
   },
   ChronicDisease: {
     type: String,
     required: false,
   },
-  
+
   record: {
     RT: [
       {
