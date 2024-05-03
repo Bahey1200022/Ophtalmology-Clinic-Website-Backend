@@ -34,22 +34,23 @@ async function createAppointment(req, res) {
       });
     }
 
-    const doctorAvailableDays = doctor.availableDays;
-    const doctorAvailableTime = doctor.availableTime;
+    // const doctorAvailableDays = doctor.availableDays;
+    // const doctorAvailableTime = doctor.availableTime;
 
-    if (!doctorAvailableDays.includes(date.getDay())) {
-      return res.status(400).json({
-        success: false,
-        message: "Doctor is not available on the specified date",
-      });
-    }
+    // if (!doctorAvailableDays.includes(date.getDay())) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Doctor is not available on the specified date",
+    //   });
+    // }
 
-    if (doctorAvailableTime !== time) {
-      return res.status(400).json({
-        success: false,
-        message: "Doctor is not available at the specified time",
-      });
-    }
+    // if (doctorAvailableTime !== time) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Doctor is not available at the specified time",
+    //   });
+    // }
+
     // Check if appointment has been done before
     const previousAppointment = await Appointment.findOne({
       doctor: doctor._id,
@@ -191,7 +192,7 @@ async function editAppointment(req, res) {
   try {
     const { appointmentId, patientName, doctorName, newDate, newTime } =
       req.body;
-    if (!appointmentId || !patientName || !doctorName) {
+    if (!appointmentId || !doctorName) {
       return res.status(400).json({
         success: false,
         message: "Appointment ID, patientName, and doctorName are required",
@@ -212,23 +213,19 @@ async function editAppointment(req, res) {
         message: "Doctor not found",
       });
     }
+    // const doctorAvailableDays = doctor.availableDays.map((day) =>
+    //   day.toLowerCase()
+    // );
+    // const newDateDay = new Date(newDate)
+    //   .toLocaleDateString("en-US", { weekday: "long" })
+    //   .toLowerCase();
 
-    const doctorAvailableDays = doctor.availableDays;
-    const doctorAvailableTime = doctor.availableTime;
-
-    if (!doctorAvailableDays.includes(newDate.getDay())) {
-      return res.status(400).json({
-        success: false,
-        message: "Doctor is not available on the specified date",
-      });
-    }
-
-    if (doctorAvailableTime !== newTime) {
-      return res.status(400).json({
-        success: false,
-        message: "Doctor is not available at the specified time",
-      });
-    }
+    // if (!doctorAvailableDays.includes(newDateDay)) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Doctor is not available on the specified date",
+    //   });
+    // }
 
     if (newDate) {
       appointment.date = newDate;
@@ -252,7 +249,6 @@ async function editAppointment(req, res) {
     });
   }
 }
-
 module.exports = {
   createAppointment,
   getAllAppointments,
