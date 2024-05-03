@@ -140,6 +140,7 @@ async function createAppointment(req, res) {
       patientName: patient.name,
       date,
       time,
+      service,
       isDone: false, 
     });
 
