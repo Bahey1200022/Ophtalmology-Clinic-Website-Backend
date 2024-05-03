@@ -8,8 +8,9 @@ const Appointment = require("../../models/appointmentModel");
 
 // async function createAppointment(req, res) {
 //   try {
+  //     const { patientName, doctorName, date, time } = req.body;
+
 //     // const token = req.headers.authorization.split(" ")[1];
-//     const { patientName, doctorName, date, time } = req.body;
 
 //     // const decoded = await verifyToken(token);
 //     // if (!decoded) {
@@ -101,7 +102,7 @@ async function createAppointment(req, res) {
       doctor: doctor._id,
       patient: patient._id,
       date,
-      isDone: true, // Check if the appointment is done
+      isDone: true, 
     });
 
     if (previousAppointment) {
@@ -122,10 +123,9 @@ async function createAppointment(req, res) {
       },
       date,
       time,
-      isDone: false, // Initialize as not done
+      isDone: false, 
     };
 
-    // Update doctor and patient with the new appointment
     doctor.appointments.push(appointment);
     patient.appointments.push(appointment);
     await doctor.save();
@@ -134,18 +134,19 @@ async function createAppointment(req, res) {
     const appointment1 = new Appointment({
       doctor: doctor._id,
       patient: patient._id,
+      doctorName: doctor.name,
+      patientName: patient.name,
       date,
       time,
-      isDone: false, // Initialize as not done
+      isDone: false, 
     });
 
-    // Save appointment to the database
     await appointment1.save();
 
     return res.status(201).json({
       success: true,
       message: "Appointment created successfully",
-      appointment, // Optionally, you can send back the created appointment object
+      appointment, 
     });
   } catch (error) {
     console.error(error);
@@ -156,9 +157,11 @@ async function createAppointment(req, res) {
   }
 }
 
+
+
 async function getAllAppointments(req, res) {
   try {
-    const { type } = req.params.type;
+    const { type } = req.params;
     const { username } = req.body;
 
     if (!username) {
@@ -170,21 +173,22 @@ async function getAllAppointments(req, res) {
 
     let filter = {};
     let userModel;
-    
-    if (type === "patient") {
-      filter.patient = username;
-      userModel = Patient;
-    } else if (type === "doctor") {
-      filter.doctor = username;
-      userModel = Doctor;
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid type. Type must be 'patient' or 'doctor'.",
-      });
+    switch (type) {
+      case "patient":
+        filter.patientName = username;
+        userModel = Patient;
+        break;
+      case "doctor":
+        filter.doctorName = username;
+        userModel = Doctor;
+        break;
+      default:
+        return res.status(400).json({
+          success: false,
+          message: "Invalid type. Type must be 'patient' or 'doctor'.",
+        });
     }
 
-    // Find the user by username
     const user = await userModel.findOne({ name: username });
     if (!user) {
       return res.status(404).json({
@@ -193,7 +197,6 @@ async function getAllAppointments(req, res) {
       });
     }
 
-    // Retrieve all appointments based on the filter from the database
     const appointments = await Appointment.find(filter);
 
     return res.status(200).json({
@@ -209,7 +212,7 @@ async function getAllAppointments(req, res) {
   }
 }
 
-
 module.exports = {
   createAppointment,
-getAllAppointments,};
+getAllAppointments,
+};
