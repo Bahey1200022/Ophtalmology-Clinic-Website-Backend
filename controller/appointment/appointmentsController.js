@@ -308,6 +308,23 @@ async function cancelAppointment(req, res) {
     });
   }
 }
+
+async function getAllAppointments(req, res) {
+  try {
+    const appointments = await Appointment.find();
+    return res.status(200).json({
+      success: true,
+      appointments,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
 module.exports = {
   createAppointment,
   getAllAppointments,
@@ -315,5 +332,6 @@ module.exports = {
   editAppointment,
   markDone,
   cancelAppointment,
+  getAllAppointments,
 
 };
