@@ -56,6 +56,7 @@ async function createAppointment(req, res) {
       doctor: doctor._id,
       patient: patient._id,
       date,
+      
       isDone: true,
     });
 
@@ -77,6 +78,7 @@ async function createAppointment(req, res) {
       },
       date,
       time,
+      Service,
       isDone: false,
     };
 
@@ -91,6 +93,7 @@ async function createAppointment(req, res) {
       doctorName: doctor.name,
       patientName: patient.name,
       date,
+      Service,
       time,
       isDone: false,
     });
