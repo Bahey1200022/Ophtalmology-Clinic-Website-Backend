@@ -324,5 +324,6 @@ module.exports = {
   createAppointment,
  getAllAppointments,
  getAvailableTimeSlots, 
- cancelAppointment
+ cancelAppointment,
+  markDone,
 };
