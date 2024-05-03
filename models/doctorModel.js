@@ -7,25 +7,25 @@ const Schema = mongoose.Schema;
 const doctorSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
     unique: true,
+    default: false,
   },
   email: {
     type: String,
-    required: false,
     unique: true,
+    default: false,
   },
   password: {
     type: String,
-    required: true,
+    default: false,
   },
   Speciality: {
     type: String,
-    required: true,
+    default: false,
   },
   phone: {
     type: String,
-    required: true,
+    default: false,
   },
   createdAt: {
     type: Date,
@@ -33,17 +33,19 @@ const doctorSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    required: true,
+    default: false,
   },
   fees: {
     type: Number,
-    required: true,
+    default: false,
   },
   availableDays: {
-    type: [String],
-    required: true,
+    type: String,
     enum: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
   
+  },
+  availableTime: {
+    type: String,
   },
   appointments: [
     {

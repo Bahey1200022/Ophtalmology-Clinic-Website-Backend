@@ -31,6 +31,32 @@ async function doctorExist(req, res) {
     }
 }
 
+async function getDoctorInfo(req, res) {
+  try{
+   const name  = req.params.query;
+   const doctor = await Doctor.findOne({ name });
+   if (!doctor) {
+    return res.status(404).json({
+        success: false,
+        message: `Doctor with name '${name}' not found`,
+    });
+}
+
+return res.status(200).json({
+    success: true,
+    data: doctor,
+});
+
+  
+  }catch{
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  
+
+  }
+}
 
 async function doctorSignUp(req, res) {
 
@@ -38,7 +64,7 @@ async function doctorSignUp(req, res) {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password,Speciality,gender,phone, fees } = req.body;
+    const { name, email, password,Speciality,gender,phone, fees, availableDays, availableTime } = req.body;
     try {
       
       let emailExist = await Doctor.findOne({ email });
@@ -58,7 +84,7 @@ async function doctorSignUp(req, res) {
   
      
   
-      const user = new Doctor({ name, email, password,Speciality,gender,phone, fees});
+      const user = new Doctor({ name, email, password,Speciality,gender,phone, fees, availableDays, availableTime});
       //save user to database
       await user.save();
   
@@ -114,4 +140,4 @@ async function doctorLogin(req, res) {
 
 
 
-module.exports = { doctorExist, doctorSignUp, doctorLogin};
+module.exports = { doctorExist, doctorSignUp, doctorLogin, getDoctorInfo };
