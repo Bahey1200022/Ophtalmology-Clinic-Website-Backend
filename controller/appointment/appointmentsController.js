@@ -6,69 +6,6 @@ const Doctor = require("../../models/doctorModel");
 const Patient = require("../../models/patientModel");
 const Appointment = require("../../models/appointmentModel");
 
-// async function createAppointment(req, res) {
-//   try {
-  //     const { patientName, doctorName, date, time } = req.body;
-
-//     // const token = req.headers.authorization.split(" ")[1];
-
-//     // const decoded = await verifyToken(token);
-//     // if (!decoded) {
-//     //   return res.status(401).json({
-//     //     success: false,
-//     //     message: "Unauthorized",
-//     //   });
-//     // }
-
-//     //  const patient = await Patient.findById(decoded.patientId);
-//     //  if (!patient) {
-//     //    return res
-//     //      .status(404)
-//     //      .json({ success: false, message: "Patient not found" });
-//     //  }
-
-// const patient = await Patient.findOne({ name: patientName });
-// if (!patient) {
-//   return res.status(404).json({
-//     success: false,
-//     message: "Doctor not found",
-//   });
-// }
-//     // Find the doctor by name (assuming doctorName is the doctor's name)
-//     const doctor = await Doctor.findOne({ name: doctorName });
-//     if (!doctor) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Doctor not found",
-//       });
-//     }
-
-//     // Create the appointment object
-//     const appointment = {
-//       doctor: doctor._id,
-//       patient: patient._id,
-//       date,
-//       time,
-//     };
-
-//     doctor.patientappoinment.push(appointment);
-
-//     patient.doctorappoinment.push(appointment);
-
-//     await doctor.save();
-//     await patient.save();
-
-//     return res.status(201).json({
-//       success: true,
-//       message: "Appointment created successfully",
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// }
 async function createAppointment(req, res) {
   try {
     // Validate input data
@@ -97,12 +34,28 @@ async function createAppointment(req, res) {
       });
     }
 
+    const doctorAvailableDays = doctor.availableDays;
+    const doctorAvailableTime = doctor.availableTime;
+
+    if (!doctorAvailableDays.includes(date.getDay())) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor is not available on the specified date",
+      });
+    }
+
+    if (doctorAvailableTime !== time) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor is not available at the specified time",
+      });
+    }
     // Check if appointment has been done before
     const previousAppointment = await Appointment.findOne({
       doctor: doctor._id,
       patient: patient._id,
       date,
-      isDone: true, 
+      isDone: true,
     });
 
     if (previousAppointment) {
@@ -123,7 +76,7 @@ async function createAppointment(req, res) {
       },
       date,
       time,
-      isDone: false, 
+      isDone: false,
     };
 
     doctor.appointments.push(appointment);
@@ -138,7 +91,7 @@ async function createAppointment(req, res) {
       patientName: patient.name,
       date,
       time,
-      isDone: false, 
+      isDone: false,
     });
 
     await appointment1.save();
@@ -146,7 +99,7 @@ async function createAppointment(req, res) {
     return res.status(201).json({
       success: true,
       message: "Appointment created successfully",
-      appointment, 
+      appointment,
     });
   } catch (error) {
     console.error(error);
@@ -156,8 +109,6 @@ async function createAppointment(req, res) {
     });
   }
 }
-
-
 
 async function getAllAppointments(req, res) {
   try {
@@ -213,31 +164,98 @@ async function getAllAppointments(req, res) {
 }
 
 async function getAvailableTimeSlots(req, res) {
-  try{
+  try {
     const doctors = await Doctor.find();
-    const availableTimeSlots = doctors.map(doctor => {
-      return {
-      doctorName: doctor.name,
-      timeSlots: doctor.availableDays
-      };
-    }).flat();
+    const availableTimeSlots = doctors
+      .map((doctor) => {
+        return {
+          doctorName: doctor.name,
+          timeSlots: doctor.availableDays,
+        };
+      })
+      .flat();
 
     return res.status(200).json({
       success: true,
       availableTimeSlots,
     });
-   
-} catch (error) {
-  console.error(error);
-  return res.status(500).json({
-    success: false,
-    message: "Internal server error",
-  });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 }
+async function editAppointment(req, res) {
+  try {
+    const { appointmentId, patientName, doctorName, newDate, newTime } =
+      req.body;
+    if (!appointmentId || !patientName || !doctorName) {
+      return res.status(400).json({
+        success: false,
+        message: "Appointment ID, patientName, and doctorName are required",
+      });
+    }
+    const appointment = await Appointment.findById(appointmentId);
+    if (!appointment) {
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found",
+      });
+    }
+
+    const doctor = await Doctor.findOne({ name: doctorName });
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    const doctorAvailableDays = doctor.availableDays;
+    const doctorAvailableTime = doctor.availableTime;
+
+    if (!doctorAvailableDays.includes(newDate.getDay())) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor is not available on the specified date",
+      });
+    }
+
+    if (doctorAvailableTime !== newTime) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor is not available at the specified time",
+      });
+    }
+
+    if (newDate) {
+      appointment.date = newDate;
+    }
+    if (newTime) {
+      appointment.time = newTime;
+    }
+
+    await appointment.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Appointment updated successfully",
+      appointment,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 }
 
 module.exports = {
   createAppointment,
-getAllAppointments,
-getAvailableTimeSlots
+  getAllAppointments,
+  getAvailableTimeSlots,
+  editAppointment,
 };
