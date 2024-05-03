@@ -3,10 +3,7 @@ const { validationResult } = require("express-validator");
 const Admin = require("../models/adminModel");
 const brypt = require("bcrypt");
 require("dotenv").config();
-const {
-  generateToken,
-  verifyToken,
-} = require("../utils/tokens");
+const { generateToken, verifyToken } = require("../utils/tokens");
 const { comparePassword } = require("../utils/password");
 async function userExist(req, res) {
   const { username } = req.params;
@@ -47,7 +44,6 @@ async function signUp(req, res) {
   }
   const { username, email, password } = req.body;
   try {
-    
     let emailExist = await Admin.findOne({ email });
     if (emailExist) {
       return res.status(409).json({
@@ -63,9 +59,7 @@ async function signUp(req, res) {
       });
     }
 
-   
-
-    const user = new Admin({ username, email, password, });
+    const user = new Admin({ username, email, password });
     //save user to database
     await user.save();
 
@@ -129,9 +123,8 @@ async function login(req, res) {
   });
 }
 
-
 module.exports = {
-    userExist,
-    signUp,
-    login,
-}
+  userExist,
+  signUp,
+  login,
+};
