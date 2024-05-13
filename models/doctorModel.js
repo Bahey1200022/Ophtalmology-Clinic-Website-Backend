@@ -5,10 +5,14 @@ const { hashPassword } = require("../utils/password");
 const Schema = mongoose.Schema;
 
 const doctorSchema = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     unique: true,
     default: false,
+  },
+  doctorName: {
+    type: String,
+    required: true,
   },
   email: {
     type: String,

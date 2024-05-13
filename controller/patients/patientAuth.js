@@ -13,7 +13,7 @@ const { comparePassword } = require("../../utils/password");
 
 async function patientExist(req, res) {
     const { name } = req.params;
-    const user = await Patient.findOne({ name });
+    const user = await Patient.findOne({ username: name });
     try {
       if (user) {
         return res.status(409).json({
@@ -39,7 +39,7 @@ async function patientExist(req, res) {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password,DOB,gender,phone, Insurance, ChronicDisease } = req.body;
+    const { username,patientName, email, password,DOB,gender,phone, Insurance, ChronicDisease } = req.body;
     try {
       
       let emailExist = await Patient.findOne({ email });
@@ -49,7 +49,7 @@ async function patientExist(req, res) {
           message: "Email already exists",
         });
       }
-      let userExist = await Patient.findOne({ name });
+      let userExist = await Patient.findOne({ username });
       if (userExist) {
         return res.status(409).json({
           success: false,
@@ -59,7 +59,7 @@ async function patientExist(req, res) {
   
      
   
-      const user = new Patient({ name, email, password,DOB,gender,phone, Insurance, ChronicDisease});
+      const user = new Patient({ username,patientName, email, password,DOB,gender,phone, Insurance, ChronicDisease});
       //save user to database
       await user.save();
   

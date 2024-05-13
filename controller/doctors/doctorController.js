@@ -14,7 +14,7 @@ async function editProfile(req, res) {
         message: "Doctor not found",
       });
     }
-    doctor.name = name;
+    doctor.username = name;
     doctor.email = email;
     doctor.phone = phone;
     doctor.address = address;
@@ -38,7 +38,7 @@ async function editPatientProfile(req, res) {
     const { patientId, record, chronicDisease, doctor } = req.body;
 
     const patient = await Patient.findById(patientId);
-    const doctorname = await Doctor.findOne({ name: doctor });
+    const doctorname = await Doctor.findOne({ username: doctor });
 
     if (!patient) {
       return res.status(404).json({
@@ -62,7 +62,7 @@ async function editPatientProfile(req, res) {
     };
 
     if (doctorname) {
-      newRecord.doctor = doctorname.name;
+      newRecord.doctor = doctorname.username;
     }
 
     if (chronicDisease) {
@@ -90,7 +90,7 @@ async function editPatientProfile(req, res) {
 async function deleteDoctor(req, res) {
   try {
     const name  = req.params.query;
-    const doctor = await Doctor.findOneAndDelete({name});
+    const doctor = await Doctor.findOneAndDelete({ username: name });
     if (!doctor) {
       return res.status(404).json({
         success: false,

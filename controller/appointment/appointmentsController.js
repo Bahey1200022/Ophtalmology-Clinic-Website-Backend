@@ -18,7 +18,7 @@ async function createAppointment(req, res) {
     }
 
     // Find patient and doctor
-    const patient = await Patient.findOne({ name: patientName });
+    const patient = await Patient.findOne({ username: patientName });
     if (!patient) {
       return res.status(404).json({
         success: false,
@@ -26,7 +26,7 @@ async function createAppointment(req, res) {
       });
     }
 
-    const doctor = await Doctor.findOne({ name: doctorName });
+    const doctor = await Doctor.findOne({ username: doctorName });
     if (!doctor) {
       return res.status(404).json({
         success: false,
@@ -70,11 +70,11 @@ async function createAppointment(req, res) {
     const appointment = {
       doctor: {
         _id: doctor._id,
-        name: doctor.name,
+        name: doctor.username,
       },
       patient: {
         _id: patient._id,
-        name: patient.name,
+        name: patient.username,
       },
       date,
       time,
@@ -90,8 +90,8 @@ async function createAppointment(req, res) {
     const appointment1 = new Appointment({
       doctor: doctor._id,
       patient: patient._id,
-      doctorName: doctor.name,
-      patientName: patient.name,
+      doctorName: doctor.username,
+      patientName: patient.username,
       date,
       Service,
       time,
@@ -144,7 +144,7 @@ async function getAllAppointments(req, res) {
         });
     }
 
-    const user = await userModel.findOne({ name: username });
+    const user = await userModel.findOne({ username: username });
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -173,7 +173,7 @@ async function getAvailableTimeSlots(req, res) {
     const availableTimeSlots = doctors
       .map((doctor) => {
         return {
-          doctorName: doctor.name,
+          doctorName: doctor.username,
           timeSlots: doctor.availableDays,
         };
       })
@@ -209,7 +209,7 @@ async function editAppointment(req, res) {
       });
     }
 
-    const doctor = await Doctor.findOne({ name: doctorName });
+    const doctor = await Doctor.findOne({ username: doctorName });
     if (!doctor) {
       return res.status(404).json({
         success: false,

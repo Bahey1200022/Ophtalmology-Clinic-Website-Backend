@@ -16,7 +16,7 @@ async function editAvailability(req, res) {
     return res.status(400).json({ errors: errors.array() });
   }
   const {name, days } = req.body;
-  const user = await Doctor.findOne({name});
+  const user = await Doctor.findOne({ username:name });
   if (!user) {
     return res.status(404).json({
       success: false,

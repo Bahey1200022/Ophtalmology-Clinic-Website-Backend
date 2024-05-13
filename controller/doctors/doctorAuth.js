@@ -11,7 +11,7 @@ const { comparePassword } = require("../../utils/password");
 
 async function doctorExist(req, res) {
     const { name } = req.params;
-    const user = await Doctor.findOne({ name });
+    const user = await Doctor.findOne({username: name });
     try {
       if (user) {
         return res.status(409).json({
@@ -34,7 +34,7 @@ async function doctorExist(req, res) {
 async function getDoctorInfo(req, res) {
   try{
    const name  = req.params.query;
-   const doctor = await Doctor.findOne({ name });
+   const doctor = await Doctor.findOne({ username:name });
    if (!doctor) {
     return res.status(404).json({
         success: false,
@@ -64,7 +64,7 @@ async function doctorSignUp(req, res) {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { name, email, password,Speciality,gender,phone, fees, availableDays, availableTime } = req.body;
+    const { username,doctorName, email, password,Speciality,gender,phone, fees, availableDays, availableTime } = req.body;
     try {
       
       let emailExist = await Doctor.findOne({ email });
@@ -74,7 +74,7 @@ async function doctorSignUp(req, res) {
           message: "Email already exists",
         });
       }
-      let userExist = await Doctor.findOne({ name });
+      let userExist = await Doctor.findOne({ username });
       if (userExist) {
         return res.status(409).json({
           success: false,
@@ -84,7 +84,7 @@ async function doctorSignUp(req, res) {
   
      
   
-      const user = new Doctor({ name, email, password,Speciality,gender,phone, fees, availableDays, availableTime});
+      const user = new Doctor({ username,doctorName, email, password,Speciality,gender,phone, fees, availableDays, availableTime});
       //save user to database
       await user.save();
   
@@ -113,7 +113,7 @@ async function doctorLogin(req, res) {
     return res.status(400).json({ errors: errors.array() });
   }
   const { name, password } = req.body;
-  const user = await Doctor.findOne({ name });
+  const user = await Doctor.findOne({ username:name });
   if (!user) {
     return res.status(404).json({
       success: false,

@@ -49,8 +49,8 @@ async function GenerateBill(req, res) {
       patientID: patient._id,
 
       doctorID: doctor._id,
-      patientName: patient.name,
-      doctorName: doctor.name,
+      patientName: patient.username,
+      doctorName: doctor.username,
       billAmount: bill,
       insuranceCoverage: discount,
       billInsured: finalBill,

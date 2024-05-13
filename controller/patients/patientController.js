@@ -31,7 +31,7 @@ async function showRecords(req, res) {
 async function patientInfo(req, res) {
     try {
         const name = req.params.query;
-        const patient = await Patient.findOne({name});
+        const patient = await Patient.findOne({ username:name });
         if (!patient) {
             return res.status(404).json({
                 success: false,
@@ -56,7 +56,7 @@ async function patientInfo(req, res) {
 async function deletePatient (req, res) {
     try {
         const name = req.params.query;
-        const patient = await Patient.findOneAndDelete(name);
+        const patient = await Patient.findOneAndDelete({username:name});
         if (!patient) {
             return res.status(404).json({
                 success: false,
