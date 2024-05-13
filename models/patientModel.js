@@ -41,7 +41,8 @@ const patientSchema = new mongoose.Schema({
     required: false,
   },
 
-  record: {
+  record: [{
+    
     RT: [
       {
         SPH: {
@@ -74,11 +75,19 @@ const patientSchema = new mongoose.Schema({
         },
       },
     ],
-    Date: {
+    date: {
       type: Date,
       default: Date.now,
     },
-  },
+    notes: {
+      type: String,
+    },
+    doctor: {
+      type: String,
+      ref: "Doctor",
+      required: true,
+    },
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

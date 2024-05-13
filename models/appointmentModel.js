@@ -24,7 +24,7 @@ const AppointmentSchema = new Schema({
     required: true,
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
   },
   time: {
@@ -35,11 +35,11 @@ const AppointmentSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  Service:{
-    type:String,
-    required:false,
-    enum :["Glasses","Contact Lenses","Surgery","Lasik","Cataract"]
-      },
+  Service: {
+    type: String,
+    required: false,
+    enum: ["Glasses", "Contact Lenses", "Surgery", "Lasik", "Cataract"],
+  },
 });
 
 const Appointment = mongoose.model("Appointment", AppointmentSchema);
