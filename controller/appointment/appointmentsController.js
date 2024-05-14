@@ -10,10 +10,10 @@ async function createAppointment(req, res) {
   try {
     // Validate input data
     const { patientName, doctorName, date, time,Service } = req.body;
-    if (!patientName || !doctorName || !date || !time) {
+    if (!patientName || !doctorName || !date ) {
       return res.status(400).json({
         success: false,
-        message: "Patient name, doctor name, date, and time are required",
+        message: "Patient name, doctor name and date are required",
       });
     }
 

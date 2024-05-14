@@ -29,7 +29,6 @@ const AppointmentSchema = new Schema({
   },
   time: {
     type: String,
-    required: true,
   },
   isDone: {
     type: Boolean,
