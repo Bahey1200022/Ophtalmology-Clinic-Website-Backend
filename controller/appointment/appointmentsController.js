@@ -9,11 +9,11 @@ const Appointment = require("../../models/appointmentModel");
 async function createAppointment(req, res) {
   try {
     // Validate input data
-    const { patientName, doctorName, date, time,Service } = req.body;
-    if (!patientName || !doctorName || !date ) {
+    const { patientName, doctorName, date, time, Service } = req.body;
+    if (!patientName || !doctorName || !date) {
       return res.status(400).json({
         success: false,
-        message: "Patient name, doctor name and date are required",
+        message: "Patient name, doctor name, and date are required",
       });
     }
 
@@ -34,29 +34,11 @@ async function createAppointment(req, res) {
       });
     }
 
-    // const doctorAvailableDays = doctor.availableDays;
-    // const doctorAvailableTime = doctor.availableTime;
-
-    // if (!doctorAvailableDays.includes(date.getDay())) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Doctor is not available on the specified date",
-    //   });
-    // }
-
-    // if (doctorAvailableTime !== time) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Doctor is not available at the specified time",
-    //   });
-    // }
-
     // Check if appointment has been done before
     const previousAppointment = await Appointment.findOne({
       doctor: doctor._id,
       patient: patient._id,
       date,
-      
       isDone: true,
     });
 
@@ -67,7 +49,23 @@ async function createAppointment(req, res) {
       });
     }
 
+    // Create appointment instance
+    const appointment1 = new Appointment({
+      doctor: doctor._id,
+      patient: patient._id,
+      doctorName: doctor.username,
+      patientName: patient.username,
+      date,
+      Service,
+      time,
+      isDone: false,
+    });
+
+    await appointment1.save();
+
+    // Push the appointment into the doctor's and patient's appointments
     const appointment = {
+      _id: appointment1._id,
       doctor: {
         _id: doctor._id,
         name: doctor.username,
@@ -86,19 +84,6 @@ async function createAppointment(req, res) {
     patient.appointments.push(appointment);
     await doctor.save();
     await patient.save();
-    // Create appointment instance
-    const appointment1 = new Appointment({
-      doctor: doctor._id,
-      patient: patient._id,
-      doctorName: doctor.username,
-      patientName: patient.username,
-      date,
-      Service,
-      time,
-      isDone: false,
-    });
-
-    await appointment1.save();
 
     return res.status(201).json({
       success: true,
@@ -113,6 +98,7 @@ async function createAppointment(req, res) {
     });
   }
 }
+
 
 async function getAllAppointments(req, res) {
   try {
