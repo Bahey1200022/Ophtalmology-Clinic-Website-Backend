@@ -8,11 +8,11 @@ const billSchema = new mongoose.Schema({
 
     patientID: {
         type: String,
-        required: true,
+        required: false,
     },
     doctorID: {
         type: String,
-        required: true,
+        required: false,
     },
     patientName: {
         type: String,
