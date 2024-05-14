@@ -69,7 +69,7 @@ const doctorSchema = new mongoose.Schema({
       time: {
         type: String,
         required: true,
-      }
+      },
     },
   ],
 });

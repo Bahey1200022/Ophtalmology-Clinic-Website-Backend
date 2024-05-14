@@ -3,117 +3,128 @@ const { validationResult } = require("express-validator");
 const brypt = require("bcrypt");
 const Doctor = require("../../models/doctorModel");
 require("dotenv").config();
-const {
-  generateToken,
-  verifyToken,
-} = require("../../utils/tokens");
+const { generateToken, verifyToken } = require("../../utils/tokens");
 const { comparePassword } = require("../../utils/password");
 
 async function doctorExist(req, res) {
-    const { name } = req.params;
-    const user = await Doctor.findOne({username: name });
-    try {
-      if (user) {
-        return res.status(409).json({
-          success: false,
-          message: "Username already exists",
-        });
-      }
-      return res.status(200).json({
-        success: true,
-        message: "Username is available",
-      });
-    } catch (error) {
-      return res.status(500).json({
+  const { name } = req.params;
+  const user = await Doctor.findOne({ username: name });
+  try {
+    if (user) {
+      return res.status(409).json({
         success: false,
-        message: error.message,
+        message: "Username already exists",
       });
     }
-}
-
-async function getDoctorInfo(req, res) {
-  try{
-   const name  = req.params.query;
-   const doctor = await Doctor.findOne({ username:name });
-   if (!doctor) {
-    return res.status(404).json({
-        success: false,
-        message: `Doctor with name '${name}' not found`,
+    return res.status(200).json({
+      success: true,
+      message: "Username is available",
     });
-}
-
-return res.status(200).json({
-    success: true,
-    data: doctor,
-});
-
-  
-  }catch{
+  } catch (error) {
     return res.status(500).json({
       success: false,
       message: error.message,
     });
-  
+  }
+}
 
+async function getDoctorInfo(req, res) {
+  try {
+    const name = req.params.query;
+    const doctor = await Doctor.findOne({ username: name });
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: `Doctor with name '${name}' not found`,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: doctor,
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 }
 
 async function doctorSignUp(req, res) {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    const { username,doctorName, email, password,Speciality,gender,phone, fees, availableDays, availableTime } = req.body;
-    try {
-      
-      let emailExist = await Doctor.findOne({ email });
-      if (emailExist) {
-        return res.status(409).json({
-          success: false,
-          message: "Email already exists",
-        });
-      }
-      let userExist = await Doctor.findOne({ username });
-      if (userExist) {
-        return res.status(409).json({
-          success: false,
-          message: "Username already exists",
-        });
-      }
-  
-     
-  
-      const user = new Doctor({ username,doctorName, email, password,Speciality,gender,phone, fees, availableDays, availableTime});
-      //save user to database
-      await user.save();
-  
-      //send verification email
-      const token = await generateToken(user._id);
-  
-      //logins user
-      const accessToken = await generateToken(user._id);
-  
-      //status
-      return res.status(201).json({
-        success: true,
-        message: "User created successfully",
-        accessToken,
-      });
-    } catch (error) {
-      return res.status(500).json({
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const {
+    username,
+    doctorName,
+    email,
+    password,
+    Speciality,
+    gender,
+    phone,
+    fees,
+    availableDays,
+    availableTime,
+  } = req.body;
+  try {
+    let emailExist = await Doctor.findOne({ email });
+    if (emailExist) {
+      return res.status(409).json({
         success: false,
-        message: error.message,
+        message: "Email already exists",
       });
     }
+    let userExist = await Doctor.findOne({ username });
+    if (userExist) {
+      return res.status(409).json({
+        success: false,
+        message: "Username already exists",
+      });
+    }
+
+    const user = new Doctor({
+      username,
+      doctorName,
+      email,
+      password,
+      Speciality,
+      gender,
+      phone,
+      fees,
+      availableDays,
+      availableTime,
+    });
+    //save user to database
+    await user.save();
+
+    //send verification email
+    const token = await generateToken(user._id);
+
+    //logins user
+    const accessToken = await generateToken(user._id);
+
+    //status
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      accessToken,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 }
 async function doctorLogin(req, res) {
-    const errors = validationResult(req);
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
   const { name, password } = req.body;
-  const user = await Doctor.findOne({ username:name });
+  const user = await Doctor.findOne({ username: name });
   if (!user) {
     return res.status(404).json({
       success: false,
@@ -136,8 +147,5 @@ async function doctorLogin(req, res) {
     accessToken,
   });
 }
-
-
-
 
 module.exports = { doctorExist, doctorSignUp, doctorLogin, getDoctorInfo };
