@@ -63,7 +63,7 @@ async function createAppointment(req, res) {
     }
 
     // Get the current queue number for the patient
-    const queueNumber = patient.appointments.length + 1;
+    const queueNumber = doctor.appointments.length + 1;
 
     // Create appointment instance
     const appointment = new Appointment({
