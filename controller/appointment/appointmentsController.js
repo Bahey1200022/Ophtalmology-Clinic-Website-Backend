@@ -273,15 +273,38 @@ return res.status(200).json({
 
 async function cancelAppointment(req, res) {
   try {
-    const  appointmentId  = req.params.id;
+    const appointmentId = req.params.id;
 
-    const appointment = await Appointment.findByIdAndDelete(appointmentId);
+    // Find the appointment
+    const appointment = await Appointment.findById(appointmentId);
+
     if (!appointment) {
       return res.status(404).json({
         success: false,
         message: "Appointment not found",
       });
     }
+
+    // Find the doctor and patient and remove the appointment from their appointments array
+    const doctor = await Doctor.findById(appointment.doctor);
+    const patient = await Patient.findById(appointment.patient);
+
+    if (doctor) {
+      doctor.appointments = doctor.appointments.filter(
+        (app) => app._id.toString() !== appointmentId
+      );
+      await doctor.save();
+    }
+
+    if (patient) {
+      patient.appointments = patient.appointments.filter(
+        (app) => app._id.toString() !== appointmentId
+      );
+      await patient.save();
+    }
+
+    await Appointment.findByIdAndDelete(appointmentId);
+
     return res.status(200).json({
       success: true,
       message: "Appointment cancelled successfully",
@@ -294,6 +317,7 @@ async function cancelAppointment(req, res) {
     });
   }
 }
+
 
 async function getAllAppointments(req, res) {
   try {
