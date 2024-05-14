@@ -161,6 +161,8 @@ async function getAvailableTimeSlots(req, res) {
         return {
           doctorName: doctor.username,
           timeSlots: doctor.availableDays,
+          time: doctor.availableTime,
+
         };
       })
       .flat();

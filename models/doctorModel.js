@@ -43,13 +43,24 @@ const doctorSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  availableDays:[ {
-    type: String, 
-    required: true,
-  }],
-  availableTime: {
-    type: String, 
-  },
+  availableDays: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  availableTime: [
+    {
+      start: {
+        type: Number,
+        required: true,
+      },
+      end: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
   appointments: [
     {
       patient: {
