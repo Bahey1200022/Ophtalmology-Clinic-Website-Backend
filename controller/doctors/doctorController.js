@@ -6,7 +6,7 @@ require("dotenv").config();
 
 async function editProfile(req, res) {
   try {
-    const { doctorId, name, email, phone, address } = req.body;
+    const { doctorId, name, email, phone, address, availableDays } = req.body;
     const doctor = await Doctor.findById(doctorId);
     if (!doctor) {
       return res.status(404).json({
@@ -14,10 +14,11 @@ async function editProfile(req, res) {
         message: "Doctor not found",
       });
     }
-    doctor.username = name;
+    doctor.doctorName = name;
     doctor.email = email;
     doctor.phone = phone;
     doctor.address = address;
+    doctor.availableDays = availableDays;
     await doctor.save();
     return res.status(200).json({
       success: true,
