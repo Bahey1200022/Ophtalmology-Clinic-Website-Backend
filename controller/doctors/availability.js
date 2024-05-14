@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const Doctor = require("../../models/doctorModel");
 require("dotenv").config();
@@ -7,11 +6,7 @@ const { generateToken, verifyToken } = require("../../utils/tokens");
 const { comparePassword } = require("../../utils/password");
 
 async function editAvailability(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
+  
   const { name, days, time } = req.body;
 
   // Find the doctor by username
@@ -46,32 +41,19 @@ async function editAvailability(req, res) {
   }
 
   // Validate and parse the 'time' array
-  if (!Array.isArray(time) || time.some((t) => !/^\d{1,2}-\d{1,2}$/.test(t))) {
+  if (
+    !Array.isArray(time) ||
+    time.some((time) => !["Morning", "Afternoon", "Evening"].includes(time))
+  ) {
     return res.status(400).json({
       success: false,
-      message: "Invalid time format provided. Use 'HH-HH' format.",
+      message: "Invalid time provided",
     });
   }
-
-  const parsedTimes = time.map((t) => {
-    const [start, end] = t.split("-").map(Number);
-    if (start >= 0 && start < 24 && end > 0 && end <= 24 && start < end) {
-      return { start, end };
-    } else {
-      return null;
-    }
-  });
-
-  if (parsedTimes.includes(null)) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid time range provided.",
-    });
-  }
-
   // Update doctor's availability
   user.availableDays = days;
-  user.availableTime = parsedTimes;
+  user.availableTime = time;
+ 
 
   await user.save();
 

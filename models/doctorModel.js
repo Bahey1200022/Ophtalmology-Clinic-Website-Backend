@@ -51,14 +51,8 @@ const doctorSchema = new mongoose.Schema({
   ],
   availableTime: [
     {
-      start: {
-        type: Number,
-        required: true,
-      },
-      end: {
-        type: Number,
-        required: true,
-      },
+      type: String,
+      required: true,
     },
   ],
   appointments: [
@@ -69,12 +63,13 @@ const doctorSchema = new mongoose.Schema({
         required: true,
       },
       date: {
-        type: Date,
+        type: String,
         required: true,
       },
       time: {
         type: String,
-      },
+        required: true,
+      }
     },
   ],
 });
