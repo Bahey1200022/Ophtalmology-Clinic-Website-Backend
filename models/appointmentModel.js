@@ -40,6 +40,10 @@ const AppointmentSchema = new Schema({
     required: false,
     enum: ["Glasses", "Contact Lenses", "Surgery", "Lasik", "Cataract"],
   },
+  queueNumber: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Appointment = mongoose.model("Appointment", AppointmentSchema);

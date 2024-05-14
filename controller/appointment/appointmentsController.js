@@ -6,6 +6,8 @@ const Doctor = require("../../models/doctorModel");
 const Patient = require("../../models/patientModel");
 const Appointment = require("../../models/appointmentModel");
 
+const { v4: uuidv4 } = require("uuid");
+
 async function createAppointment(req, res) {
   try {
     // Validate input data
@@ -59,20 +61,9 @@ async function createAppointment(req, res) {
         message: "Doctor is not available at the specified time",
       });
     }
-    // Check if appointment has been done before
-    const previousAppointment = await Appointment.findOne({
-      doctor: doctor._id,
-      patient: patient._id,
-      date,
-      isDone: true,
-    });
 
-    if (previousAppointment) {
-      return res.status(400).json({
-        success: false,
-        message: "Appointment has already been completed",
-      });
-    }
+    // Get the current queue number for the patient
+    const queueNumber = patient.appointments.length + 1;
 
     // Create appointment instance
     const appointment = new Appointment({
@@ -84,6 +75,7 @@ async function createAppointment(req, res) {
       time,
       Service,
       isDone: false,
+      queueNumber,
     });
 
     await appointment.save();
@@ -107,6 +99,7 @@ async function createAppointment(req, res) {
     });
   }
 }
+
 
 async function getAllAppointments(req, res) {
   try {
