@@ -18,8 +18,8 @@ async function GenerateBill(req, res) {
     }
     const patient = await Patient.findById(appointment.patient);
     const doctor = await Doctor.findById(appointment.doctor);
-    const patientInsurance = patient.Insurance;
-    console.log(patientInsurance);
+    const patientInsurance = patient ? patient.Insurance : "None";
+      
     const patientService = appointment.Service;
     var percentage = 0;
     var bill = 0;
