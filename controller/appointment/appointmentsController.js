@@ -180,16 +180,54 @@ async function getAvailableTimeSlots(req, res) {
     });
   }
 }
-async function editAppointment(req, res) {
-  try {
-    const { appointmentId, patientName, doctorName, newDate, newTime } =
-      req.body;
-    if (!appointmentId || !doctorName) {
+
+  async function markDone(req, res) {
+    try {
+      const { _id } = req.body
+      const appointment = await Appointment.findById(_id);
+
+      if (!appointment) {
+        return res.status(400).json({
+          success: false,
+          message: "Appointment not found",
+        });
+      }
+
+      // Update an attribute in the appointment
+      appointment.isDone = true;
+      await appointment.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Appointment attribute updated successfully",
+        appointment,
+      });
+
+
+    }
+    catch (error) {
+      console.error(error);
       return res.status(400).json({
         success: false,
-        message: "Appointment ID, patientName, and doctorName are required",
+        message: "Internal server error",
       });
     }
+  }
+async function editAppointment(req, res) {
+  try {
+    const { appointmentId, newDate, newTime, patientName, doctorName } =
+      req.body;
+
+    // Validate input parameters
+    if (!appointmentId || (!newDate && !newTime) || !doctorName) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Appointment ID, doctorName, and either newDate or newTime are required",
+      });
+    }
+
+    // Find the appointment
     const appointment = await Appointment.findById(appointmentId);
     if (!appointment) {
       return res.status(404).json({
@@ -198,6 +236,7 @@ async function editAppointment(req, res) {
       });
     }
 
+    // Find the doctor
     const doctor = await Doctor.findOne({ username: doctorName });
     if (!doctor) {
       return res.status(404).json({
@@ -205,27 +244,39 @@ async function editAppointment(req, res) {
         message: "Doctor not found",
       });
     }
-    // const doctorAvailableDays = doctor.availableDays.map((day) =>
-    //   day.toLowerCase()
-    // );
-    // const newDateDay = new Date(newDate)
-    //   .toLocaleDateString("en-US", { weekday: "long" })
-    //   .toLowerCase();
 
-    // if (!doctorAvailableDays.includes(newDateDay)) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Doctor is not available on the specified date",
-    //   });
-    // }
-
-    if (newDate) {
+    // Update appointment's date if new date is provided
+    if (newDate && newDate !== appointment.date) {
       appointment.date = newDate;
     }
-    if (newTime) {
+
+    // Update appointment's time if new time is provided
+    if (newTime && newTime !== appointment.time) {
       appointment.time = newTime;
     }
 
+    // Check doctor's availability at the new date and time
+    if (newDate && newTime) {
+      if (!doctor.availableDays.includes(newDate)) {
+        return res.status(400).json({
+          success: false,
+          message: "Doctor is not available on the specified date",
+        });
+      }
+
+      if (!doctor.availableTime.includes(newTime)) {
+        return res.status(400).json({
+          success: false,
+          message: "Doctor is not available at the specified time",
+        });
+      }
+    }
+
+    // Calculate queue number
+    const queueNumber = doctor.appointments.length + 1;
+    appointment.queueNumber = queueNumber;
+
+    // Save the updated appointment
     await appointment.save();
 
     return res.status(200).json({
@@ -241,38 +292,8 @@ async function editAppointment(req, res) {
     });
   }
 }
-async function markDone(req, res) {
-  try{
-const{ _id}=req.body
-const appointment = await Appointment.findById(_id);
-
-if (!appointment) {
-  return res.status(400).json({
-    success: false,
-    message: "Appointment not found",
-  });
-}
-
-// Update an attribute in the appointment
-appointment.isDone = true;
-await appointment.save();
-
-return res.status(200).json({
-  success: true,
-  message: "Appointment attribute updated successfully",
-  appointment,
-});
 
 
-  }
-  catch (error) {
-    console.error(error);
-    return res.status(400).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-}
 
 async function cancelAppointment(req, res) {
   try {

@@ -8,8 +8,8 @@ const Appointment = require("../../models/appointmentModel");
 const Bill = require("../../models/billModel");
 async function GenerateBill(req, res) {
   try {
-    const { _id } = req.body;
-    const appointment = await Appointment.findById(_id);
+    const { appointmentID } = req.body;
+    const appointment = await Appointment.findById(appointmentID);
     if (!appointment) {
       return res.status(400).json({
         success: false,
