@@ -99,8 +99,8 @@ async function patientLogin(req, res) {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const { name, password } = req.body;
-  const user = await Patient.findOne({ username:name });
+  const { username, password } = req.body;
+  const user = await Patient.findOne({ username: username });
   if (!user) {
     return res.status(404).json({
       success: false,
