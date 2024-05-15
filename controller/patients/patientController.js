@@ -5,8 +5,8 @@ const { validationResult } = require("express-validator");
 require("dotenv").config();
 async function showRecords(req, res) {
   try {
-    const { patientId } = req.body;
-    const patient = await Patient.findById(patientId);
+    const { patientName } = req.body;
+    const patient = await Patient.findOne({username: patientName});
     if (!patient) {
       return res.status(404).json({
         success: false,
@@ -74,27 +74,27 @@ async function deletePatient(req, res) {
   }
 }
 
-async function showRecords(req, res) {
-  try {
-    const name = req.params.query;
-    const patient = await Patient.findOne({ username: name });
-    if (!patient) {
-      return res.status(404).json({
-        success: false,
-        message: "Patient not found",
-      });
-    }
-    return res.status(200).json({
-      success: true,
-      message: "Records found",
-      records: patient.record,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error",
-      error: error.message,
-    });
-  }
-}
-module.exports = { showRecords, patientInfo, deletePatient, showRecords };
+// async function showRecords(req, res) {
+//   try {
+//     const name = req.params.query;
+//     const patient = await Patient.findOne({ username: name });
+//     if (!patient) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Patient not found",
+//       });
+//     }
+//     return res.status(200).json({
+//       success: true,
+//       message: "Records found",
+//       records: patient.record,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//       error: error.message,
+//     });
+//   }
+// }
+module.exports = { showRecords, patientInfo, deletePatient };

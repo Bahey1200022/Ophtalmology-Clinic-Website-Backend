@@ -6,7 +6,7 @@ const checkController = require("../controller/checkController");
 
 router.post("/adminLogin", entryController.login);
 router.post("/adminSignUp", entryController.signUp);
-router.get("/checkUsername", checkController.CheckMe);
+router.post("/checkUsername", checkController.CheckMe);
 
 
 module.exports = router;
