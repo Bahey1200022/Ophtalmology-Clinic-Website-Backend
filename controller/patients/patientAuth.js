@@ -5,7 +5,7 @@ const Patient = require("../../models/patientModel");
 require("dotenv").config();
 const { generateToken, verifyToken } = require("../../utils/tokens");
 const { comparePassword } = require("../../utils/password");
-
+const mail = require("../../utils/mailHandler");
 async function patientExist(req, res) {
   const { name } = req.params;
   const user = await Patient.findOne({ username: name });
@@ -74,6 +74,25 @@ async function patientSignUp(req, res) {
     //save user to database
     await user.save();
 
+    const emailHTML = `
+    <html>
+      <body>
+        <h1>Welcome to Our Clinic!</h1>
+        <p>
+          <strong>Username:</strong> ${username}<br>
+          <strong>Password:</strong> ${password}
+        </p>
+        <p>Please do not share this information with anyone.</p>
+      </body>
+    </html>
+    `;
+    const emailSubject = "Verify your email address to the clinic";
+
+    await mail({
+      email: email,
+      subject: emailSubject,
+      text: emailHTML,
+    });
     //send verification email
     const token = await generateToken(user._id);
 
