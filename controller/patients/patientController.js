@@ -74,6 +74,57 @@ async function deletePatient(req, res) {
   }
 }
 
+async function showAllRecords(req, res) {
+  try {
+    const patients = await Patient.find({});
+    if (!patients || patients.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No patients found",
+      });
+    }
+    let allRecords = [];
+    patients.forEach(patient => {
+      allRecords = allRecords.concat(patient.record);
+    });
+    return res.status(200).json({
+      success: true,
+      message: "All records found",
+      records: allRecords,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+}
+async function getAllPatients(req, res) {
+  try {
+    const patients = await Patient.find({});
+    if (!patients || patients.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No patients found",
+      });
+    }
+    const usernames = patients.map(patient => patient.username); // Extracting usernames
+    return res.status(200).json({
+      success: true,
+      message: "All patients found",
+      patients: usernames, // Sending only usernames
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+}
+
+
 // async function showRecords(req, res) {
 //   try {
 //     const name = req.params.query;
@@ -97,4 +148,6 @@ async function deletePatient(req, res) {
 //     });
 //   }
 // }
-module.exports = { showRecords, patientInfo, deletePatient };
+
+
+module.exports = { showRecords, patientInfo, deletePatient, showAllRecords, getAllPatients };

@@ -8,5 +8,7 @@ router.post("/patientLogin", patientAuth.patientLogin);
 router.get("/patientRecords", patientController.showRecords);
 router.get("/patientInfo/:query", patientController.patientInfo);
 router.delete("/deletePatient/:query", patientController.deletePatient);
+router.get("/allPatients", patientController.getAllPatients);
+router.get("/allRecords", patientController.showAllRecords);
 // router.get("/patientRecords/:query", patientController.showRecords);
 module.exports = router;
