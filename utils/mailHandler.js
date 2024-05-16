@@ -12,7 +12,7 @@ const sendemail = async (options) => {
     });
 
     const emailOptions = {
-        from: '"reddit clone admin" <clonereddit055@gmail.com>',
+        from: '"Clinic admin" <clinic@gmail.com>',
         to: options.email,
         subject: options.subject,
         html: options.text
