@@ -1,5 +1,6 @@
 const Patient = require("../../models/patientModel");
 const Doctor = require("../../models/doctorModel");
+const Appointment = require("../../models/appointmentModel");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 require("dotenv").config();
@@ -124,30 +125,44 @@ async function getAllPatients(req, res) {
   }
 }
 
+async function getMyAppointments(req, res) {
+  try {
+    const { patientName } = req.body;
+    const patient = await Patient.findOne({ username: patientName });
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found",
+      });
+    }
+    const appointments = await Appointment.find({ patient: patient._id });
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No appointments found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Appointments found",
+      appointments: appointments,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  } 
+}
 
-// async function showRecords(req, res) {
-//   try {
-//     const name = req.params.query;
-//     const patient = await Patient.findOne({ username: name });
-//     if (!patient) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Patient not found",
-//       });
-//     }
-//     return res.status(200).json({
-//       success: true,
-//       message: "Records found",
-//       records: patient.record,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal Server Error",
-//       error: error.message,
-//     });
-//   }
-// }
 
 
-module.exports = { showRecords, patientInfo, deletePatient, showAllRecords, getAllPatients };
+module.exports = {
+  showRecords,
+  patientInfo,
+  deletePatient,
+  showAllRecords,
+  getAllPatients,
+  getMyAppointments,
+};
