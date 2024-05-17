@@ -16,6 +16,7 @@ router.post("/doctorEditPatientProfile", doctorController.editPatientProfile);
 router.get("/doctorsInfo/:query", doctorAuth.getDoctorInfo);
 router.delete("/deleteDoctor/:query", doctorController.deleteDoctor);
 router.get("/doctorAvailability/:query", doctorController.getDoctorAvailability);
+router.get("/allDoctors", doctorController.getAllDoctors);
 
 module.exports = router;
 
