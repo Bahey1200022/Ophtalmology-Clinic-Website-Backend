@@ -33,12 +33,11 @@ async function editProfile(req, res) {
   }
 }
 
-
 async function editPatientProfile(req, res) {
   try {
-    const { patientId, record, chronicDisease, doctor } = req.body;
+    const { patientName, record, chronicDisease, doctor } = req.body;
 
-    const patient = await Patient.findById(patientId);
+    const patient = await Patient.findOne({ username: patientName });
     const doctorname = await Doctor.findOne({ username: doctor });
 
     if (!patient) {
@@ -69,6 +68,9 @@ async function editPatientProfile(req, res) {
     if (chronicDisease) {
       patient.ChronicDisease = chronicDisease;
     }
+    if (!Array.isArray(patient.record)) {
+      patient.record = [];
+    }
 
     patient.record.push(newRecord);
 
@@ -87,10 +89,9 @@ async function editPatientProfile(req, res) {
   }
 }
 
-
 async function deleteDoctor(req, res) {
   try {
-    const name  = req.params.query;
+    const name = req.params.query;
     const doctor = await Doctor.findOneAndDelete({ username: name });
     if (!doctor) {
       return res.status(404).json({
@@ -110,10 +111,34 @@ async function deleteDoctor(req, res) {
     });
   }
 }
-
+async function getDoctorAvailability(req, res) {
+  try {
+    const name = req.params.query;
+    const doctor = await Doctor.findOne({ username: name });
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: `Doctor with name '${name}' not found`,
+      });
+    }
+    const availableDays = doctor.availableDays;
+    const availableTime = doctor.availableTime;
+    return res.status(200).json({
+      success: true,
+      date: availableDays,
+      time: availableTime,
+    });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 
 module.exports = {
   editProfile,
   editPatientProfile,
   deleteDoctor,
-}
+  getDoctorAvailability,
+};
