@@ -4,7 +4,10 @@ const appointmentController = require("../controller/appointment/appointmentsCon
 
 router.get("/appointments", appointmentController.getAvailableTimeSlots);
 router.post("/createAppointment", appointmentController.createAppointment);
-router.get("/appointments/history/:type", appointmentController.getAllAppointments);
+router.get(
+  "/appointments/history/:type/:username",
+  appointmentController.getWhoAppointments
+);
 router.post("/appointments/markDone", appointmentController.markDone);
 router.patch("/cancelAppointment/:id", appointmentController.cancelAppointment);
 router.post("/appointments/edit", appointmentController.editAppointment);   

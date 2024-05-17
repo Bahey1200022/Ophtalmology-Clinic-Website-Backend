@@ -101,10 +101,10 @@ async function createAppointment(req, res) {
 }
 
 
-async function getAllAppointments(req, res) {
+async function getWhoAppointments(req, res) {
   try {
     const { type } = req.params;
-    const { username } = req.body;
+    const { username } = req.params;
 
     if (!username) {
       return res.status(400).json({
@@ -361,11 +361,10 @@ async function getAllAppointments(req, res) {
 
 module.exports = {
   createAppointment,
-  getAllAppointments,
+  getWhoAppointments,
   getAvailableTimeSlots,
   editAppointment,
   markDone,
   cancelAppointment,
   getAllAppointments,
-
 };
