@@ -127,7 +127,7 @@ async function getAllPatients(req, res) {
 
 async function getMyAppointments(req, res) {
   try {
-    const { patientName } = req.body;
+    const { patientName } = req.params;
     const patient = await Patient.findOne({ username: patientName });
     if (!patient) {
       return res.status(404).json({

@@ -10,5 +10,5 @@ router.get("/patientInfo/:query", patientController.patientInfo);
 router.delete("/deletePatient/:query", patientController.deletePatient);
 router.get("/allPatients", patientController.getAllPatients);
 router.get("/allRecords", patientController.showAllRecords);
-router.get("/myAppointments", patientController.getMyAppointments);
+router.get("/myAppointments/:patientName", patientController.getMyAppointments);
 module.exports = router;
