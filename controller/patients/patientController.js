@@ -1,13 +1,14 @@
 const Patient = require("../../models/patientModel");
 const Doctor = require("../../models/doctorModel");
 const Appointment = require("../../models/appointmentModel");
+const Bill = require("../../models/billModel");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 require("dotenv").config();
 async function showRecords(req, res) {
   try {
     const { patientName } = req.body;
-    const patient = await Patient.findOne({username: patientName});
+    const patient = await Patient.findOne({ username: patientName });
     if (!patient) {
       return res.status(404).json({
         success: false,
@@ -85,7 +86,7 @@ async function showAllRecords(req, res) {
       });
     }
     let allRecords = [];
-    patients.forEach(patient => {
+    patients.forEach((patient) => {
       allRecords = allRecords.concat(patient.record);
     });
     return res.status(200).json({
@@ -110,7 +111,7 @@ async function getAllPatients(req, res) {
         message: "No patients found",
       });
     }
-    const usernames = patients.map(patient => patient.username); // Extracting usernames
+    const usernames = patients.map((patient) => patient.username); // Extracting usernames
     return res.status(200).json({
       success: true,
       message: "All patients found",
@@ -153,10 +154,32 @@ async function getMyAppointments(req, res) {
       message: "Internal Server Error",
       error: error.message,
     });
-  } 
+  }
 }
 
-
+async function getBills(req, res) {
+  try {
+    const { ID } = req.params;
+    const bill = await Bill.find({ patientID: ID });
+    if (!bill || bill.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No bills found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Bills found",
+      bills: bill,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+}
 
 module.exports = {
   showRecords,
@@ -165,4 +188,5 @@ module.exports = {
   showAllRecords,
   getAllPatients,
   getMyAppointments,
+  getBills,
 };
