@@ -7,7 +7,7 @@ const { validationResult } = require("express-validator");
 require("dotenv").config();
 async function showRecords(req, res) {
   try {
-    const { patientName } = req.body;
+    const { patientName } = req.params.query;
     const patient = await Patient.findOne({ username: patientName });
     if (!patient) {
       return res.status(404).json({
