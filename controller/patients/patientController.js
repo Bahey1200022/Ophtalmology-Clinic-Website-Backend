@@ -159,8 +159,8 @@ async function getMyAppointments(req, res) {
 
 async function getBills(req, res) {
   try {
-    const { ID } = req.params;
-    const bill = await Bill.find({ patientID: ID });
+    const { username } = req.params;
+    const bill = await Bill.findOne({ patientName: username });
     if (!bill || bill.length === 0) {
       return res.status(400).json({
         success: false,
