@@ -5,7 +5,7 @@ const { hashPassword } = require("../utils/password");
 const Schema = mongoose.Schema;
 
 const billSchema = new mongoose.Schema({
-
+    
     patientID: {
         type: String,
         required: false,
@@ -50,6 +50,10 @@ const billSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
+    },
+    isPaid: {
+        type: Boolean,
+        default: false,
     },
 
 });

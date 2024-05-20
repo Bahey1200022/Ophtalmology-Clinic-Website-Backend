@@ -180,6 +180,33 @@ async function getBills(req, res) {
     });
   }
 }
+async function markBillAsPaid(req, res) {
+  try {
+    const { billID } = req.params;
+    // Use findById with billID directly
+    const bill = await Bill.findById(billID);
+    if (!bill) {
+      return res.status(404).json({
+        success: false,
+        message: "Bill not found",
+      });
+    }
+    bill.isPaid = true;
+    await bill.save();
+    return res.status(200).json({
+      success: true,
+      message: "Bill marked as paid",
+      bill: bill,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+}
+
 
 module.exports = {
   showRecords,
@@ -189,4 +216,5 @@ module.exports = {
   getAllPatients,
   getMyAppointments,
   getBills,
+  markBillAsPaid,
 };
